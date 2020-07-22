@@ -191,7 +191,7 @@ class User extends Model
         ));
     }
 
-    public static function getForgot($email)
+    public static function getForgot($email, $inadmin = true)
     {
         $sql = new Sql();
 
@@ -228,7 +228,17 @@ class User extends Model
 
                 $code = base64_encode($code);
 
-                $link = "http://meuecommerce.com/admin/forgot/reset?code=$code";
+                if ($inadmin === true){
+
+                    $link = "http://meuecommerce.com/admin/forgot/reset?code=$code";
+
+                } else {
+
+                    $link = "http://meuecommerce.com/forgot/reset?code=$code";
+
+                }
+
+                
 
                 $mailer = new Mailer(
                     $data["desemail"],
