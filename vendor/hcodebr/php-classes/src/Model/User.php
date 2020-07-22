@@ -11,8 +11,10 @@ class User extends Model
 
     const SESSION = "User";
     const SECRET = "HcodePhp7_Secret";
-    const ERROR = "UserError";
     const SECRET_IV = "HcodePhp7_Secret_IV";
+    const ERROR = "UserError";
+    const ERROR_REGISTER = "UserErrorRegister";
+    
 
     protected $fields = [
         "iduser", "idperson", "deslogin", "despassword", "desemail",
@@ -334,5 +336,46 @@ class User extends Model
 
 		$_SESSION[User::ERROR] = NULL;
 
+    }
+
+    public static function setErrorRegister($msg)
+	{
+
+		$_SESSION[User::ERROR_REGISTER] = $msg;
+
 	}
+
+	public static function getErrorRegister()
+	{
+
+		$msg = (isset($_SESSION[User::ERROR_REGISTER]) && $_SESSION[User::ERROR_REGISTER]) ? $_SESSION[User::ERROR_REGISTER] : '';
+
+		User::clearErrorRegister();
+
+		return $msg;
+
+	}
+
+	public static function clearErrorRegister()
+	{
+
+		$_SESSION[User::ERROR_REGISTER] = NULL;
+
+    }
+    
+    public static function checkLoginExist($login)
+	{
+
+		$sql = new Sql();
+
+		$results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :deslogin", [
+			':deslogin'=>$login
+		]);
+
+		return (count($results) > 0);
+
+	}
+
+    
+
 }
