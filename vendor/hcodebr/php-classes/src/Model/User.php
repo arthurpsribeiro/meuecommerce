@@ -85,8 +85,6 @@ class User extends Model
 
             $user = new User();
 
-            $data['desperson'] = utf8_encode($data['desperson']);
-
             $user->setData($data);
 
             $_SESSION[User::SESSION] = $user->getValues();
@@ -156,7 +154,7 @@ class User extends Model
 
 		$data = $results[0];
 
-		$data['desperson'] = utf8_encode($data['desperson']);
+		$data['desperson'] = $data['desperson'];
 
 
 		$this->setData($data);
@@ -413,8 +411,26 @@ class User extends Model
 
 		return (count($results) > 0);
 
-	}
-
+    }
     
+    public function getOrders()
+    {
+
+        $sql = new Sql();
+        
+        $results = $sql->select("SELECT * FROM tb_orders a 
+                                 INNER JOIN tb_ordersstatus b USING(idstatus)
+                                 INNER JOIN tb_carts c USING(idcart)
+                                 INNER JOIN tb_users d ON d.iduser = a.iduser
+                                 INNER JOIN tb_addresses e USING(idaddress)
+                                 INNER JOIN tb_persons f ON f.idperson = d.idperson
+                                 WHERE a.iduser = :iduser
+                                 ", [
+                                     ':iduser' => $this->getiduser()
+                                    ]);
+        
+        return $results;
+
+    }
 
 }
